@@ -3,7 +3,7 @@ LABEL Author="Tonny Gieselaar <tgiesela@gmail.com>"
 
 ENV DEBIAN_FRONTEND="noninteractive" \
     TERM="xterm" \ 
-    APTLIST="git-core cron wget jq locales"
+    APTLIST="git-core cron wget jq locales nano"
 
 RUN apt -y update && apt -qy install ${APTLIST} && \
     locale-gen --no-purge nl_NL.UTF-8 en_US.UTF-8 && \

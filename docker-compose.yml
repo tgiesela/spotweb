@@ -24,8 +24,10 @@ services:
      - /dockerdata/spotweb:/config
 
   spotweb_db:
-    image: linuxserver/mariadb
+    image: tgiesela/db
+    build: ./mariadb/
     container_name: spotwebdb
+    hostname: spotwebdb
     restart: unless-stopped
     environment:
      - PUID=1001
@@ -39,3 +41,15 @@ services:
      - /dockerdata/mariadb:/config
     ports:
      - 3306:3306
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin
+    restart: unless-stopped
+    environment:
+     - TZ=Europe/Amsterdam
+     - MYSQL_ROOT_PASSWORD=spotweb
+     - PMA_HOST=spotwebdb
+    ports:
+     - 8080:80
+
