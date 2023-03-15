@@ -2,7 +2,9 @@
 
 An image running [php/apache/debian/8.1.16](https://hub.docker.com/_/php/) Linux and [Spotweb](https://github.com/spotweb/spotweb).
 This setup is based on the work of [Jeroen Geusebroek](https://github.com/jgeusebroek/docker-spotweb).
-The changes I made were required to run it on raspberry pi with Debian 11.
+The changes I made were required to run it on raspberry pi 4 (4GB) with Debian 11 (32-bit) because there were issues with the SSL-connection to the newserver.
+Unfortunately the mariadb crashes with corrupted indexes. It runs without problems in a 64-bit virtual machine. So maybe the problems are caused by insufficient memory or the 32-bit version. 
+I added my custom.cnf for mariadb as an example in which I changed the memory parameter and disable bin-log.
 
 ## Requirements
 

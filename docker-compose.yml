@@ -24,8 +24,7 @@ services:
      - /dockerdata/spotweb:/config
 
   spotweb_db:
-    image: tgiesela/db
-    build: ./mariadb/
+    image: linuxserver/mariadb
     container_name: spotwebdb
     hostname: spotwebdb
     restart: unless-stopped
