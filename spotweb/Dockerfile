@@ -17,7 +17,7 @@ RUN git clone --no-checkout -b master --depth 1 --single-branch https://github.c
     chmod -R 775 /var/www/spotweb && \
     chown -R www-data:www-data /var/www/spotweb
 
-RUN apt -y install libffi-dev libmpc-dev libpq-dev libxslt1-dev libzip-dev && \
+RUN apt -y install libffi-dev libfreetype6-dev libjpeg-dev libmpc-dev libpng-dev libpq-dev libxslt1-dev libzip-dev && \
     # Cleanup
     apt -y autoremove && \
     apt -y clean && \
@@ -25,8 +25,9 @@ RUN apt -y install libffi-dev libmpc-dev libpq-dev libxslt1-dev libzip-dev && \
     rm -r /var/www/html && \
     rm -rf /tmp/*
 
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 RUN docker-php-ext-install \
-    calendar exif ffi gettext gmp \
+    calendar exif ffi gettext gd gmp \
     mysqli pcntl pdo pdo_mysql pdo_pgsql pgsql \
     shmop sockets sysvmsg sysvsem sysvshm xsl zip
 
