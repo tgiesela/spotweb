@@ -1,0 +1,10 @@
+version: "2.1"
+  spotweb:
+    environment:
+     - SPOTWEB_DB_TYPE=pdo_sqlite
+     - SPOTWEB_DB_HOST=localhost
+     - SPOTWEB_DB_PORT=0
+     - SPOTWEB_DB_NAME=/config/spotweb
+    volumes:
+     - ${SPOTWEBVOLUME}/sqlite/spotweb:/config
+

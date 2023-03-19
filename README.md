@@ -4,35 +4,46 @@ An image running [php/apache/debian/8.1.16](https://hub.docker.com/_/php/) Linux
 This setup is based on the work of [Jeroen Geusebroek](https://github.com/jgeusebroek/docker-spotweb).
 The changes I made were required to run it on raspberry pi 4 (4GB) with Debian 11 (32-bit) because there were issues with the SSL-connection to the newserver.
 Unfortunately the mariadb crashes with corrupted indexes. It runs without problems in a 64-bit virtual machine. So maybe the problems are caused by insufficient memory or the 32-bit version. 
-I added my custom.cnf for mariadb as an example in which I changed the memory parameter and disable bin-log.
+I added my custom.cnf for mariadb as an example in which I changed the memory parameters and disabled bin-log.
+PostgreSQL and Sqlite run without problems on Raspberry Pi 4 (32-bit).
 
 ## Requirements
 
-This installation consists of a docker-compose file (Thanks to [Daniel Jongepier](https://github.com/djongepier)). 
-It contains the spotweb server, a MariaDB server and a phpMyAdmin server linked to the mariaDB.
+This installation consists of a set of docker-compose files.
+It contains the spotweb server, a database server and an admin server linked to the database.
 
 ## Usage
 
 ### Initial Installation
 
-Edit the docker-compose.yml file to change passwords, volumes and ports as required for your installation. Default the spotweb application uses port 8085 and the phpMyAdmin uses port 8080.
+For each database type you want to use there is a docker-compose.<dbtype>.tml file. Together with the docker-compose.yml file these files make up a configuration.
+Edit the docker-compose.yml files to change passwords, volumes and ports as required for your installation. 
+Select the database type you want to use and create a softlink to the specific yml file, e.g:
+
+	ls -s docker-compose.postgresql.yml docker-compose.override.yml
+
 Then run the following command:
 
 	docker-compose up --build -d
 	
-When the containers have been started, make the dbsettings.php.inc file empty. It will reside on the config volume for the spotweb container.
+If you do not create a softlink, you can start it with the following command:
+
+	docker-compose -f docker-compose.yml -f docker-compose.postgresql.yml up --build -d
+
+When the containers have been started, make the dbsettings.php.inc file empty. The file can be found on the config volume for the spotweb container.
+
+	docker exec -it spotweb truncate -s 0 /config/dbsettings.inc.php
+	
 Then run the Spotweb installer using the web interface: 'http://yourhost:8085/install.php'.
 This will create the necessary database tables and users.
 
-The database port is also optional. If omitted it will use the standard port for MySQL / PostgreSQL.
-
 You should now be able to reach the spotweb interface on port 8085.
-PhpMyAdmin will be available on port 8080.
+Mysql: PhpMyAdmin will be available on port 8080.
+PostgreSQL: Admniner or pgadmin4 (You have to uncomment the one you want to use) will be available on port 8080. 
 
 To perform an orderly shutdown of the mariadb container, first execute the command:
 
 	docker exec -it spotwebdb /init.sh shutdown
-
 
 ### Automatic retrieval of new spots
 To enable automatic retrieval, you need to setup a cronjob on either the docker host or within the container.
