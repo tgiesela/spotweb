@@ -3,7 +3,7 @@
 setup(){
 source /etc/apache2/envvars
 /usr/pgadmin4/bin/setup-web.sh --yes << _EOF
-tgiesela@gmail.com
+${PGADMINEMAIL}
 pgadmin4
 pgadmin4
 _EOF

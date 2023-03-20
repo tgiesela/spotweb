@@ -42,6 +42,7 @@ services:
     hostname: pgadmin4
     environment:
      - TZ=Europe/Amsterdam
+     - PGADMINEMAIL=${PGADMINEMAIL}
     depends_on:
      - db
     ports:
