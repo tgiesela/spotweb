@@ -1,29 +1,49 @@
 FROM debian:bullseye
 LABEL Author="Tonny Gieselaar <tgiesela@gmail.com>"
-
+# From https://www.pgadmin.org/download/pgadmin-4-python/
 ENV DEBIAN_FRONTEND="noninteractive" \
     TERM="xterm" 
 
-RUN apt -y update && apt -qy install locales nano gnupg curl lsb-release && \
-    curl https://www.pgadmin.org/static/packages_pgadmin_org.pub | apt-key add && \
-    sh -c 'echo "deb https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/$(lsb_release -cs) pgadmin4 main" > /etc/apt/sources.list.d/pgadmin4.list'
-RUN apt -y update && apt -qy install pgadmin4 && \
-    locale-gen --no-purge nl_NL.UTF-8 en_US.UTF-8 && \
-    a2enmod headers 
+RUN apt update && apt -yq install \
+	build-essential \
+	zlib1g-dev \
+        libncurses5-dev \
+        libgdbm-dev \
+        libnss3-dev \
+	libssl-dev \
+	libreadline-dev \
+	libffi-dev \
+	libsqlite3-dev \
+	wget curl \
+	libbz2-dev \
+	nano \
+	locales \
+        python3 \
+        python3-pip \
+        python3-venv \
+        libpq-dev python-dev \
+	libjpeg-dev \
+	apache2 \
+	apache2-utils \
+	ssl-cert \
+	libapache2-mod-wsgi-py3
+
+RUN locale-gen --no-purge nl_NL.UTF-8 en_US.UTF-8
+RUN python3 -m venv /pgadmin4 
+RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
+RUN . ${HOME}/.cargo/env && . /pgadmin4/bin/activate && pip install pgadmin4
 
     # Cleanup
 RUN apt -y autoremove && \
     apt -y clean && \
     rm -rf /var/lib/apt/lists/* && \
-    rm -r /var/www/html && \
     rm -rf /tmp/*
-
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
-VOLUME [ "/config" ]
 
 EXPOSE 80
 
+COPY config_local.py /config_local.py
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+VOLUME /config/
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["setup"]
+

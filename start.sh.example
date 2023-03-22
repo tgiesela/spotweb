@@ -1,0 +1,18 @@
+#!/bin/bash
+export SPOTWEBVOLUME=/yourfolder
+export PGADMINEMAIL=youremail@host.com
+export PGADMINPASSWORD=yourpassword
+export MAIL_SERVER = '<smtp-host>'
+export MAIL_PORT = 25
+export MAIL_USE_SSL = False
+export MAIL_USE_TLS = False
+export MAIL_USERNAME = '<email-address>'
+export MAIL_PASSWORD = '<password>'
+
+if [ -h docker-compose.override.yml ] ; then
+  echo "Removing existing override.yml" 
+  rm docker-compose.override.yml
+fi
+ln -s docker-compose.<yourdatabaseengine>.yml docker-compose.override.yml
+docker-compose up --build -d
+

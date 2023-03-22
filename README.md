@@ -54,7 +54,7 @@ This will create the necessary database tables and users. The connection paramet
 You should now be able to reach the spotweb interface on port 8085.
 
 Mysql: PhpMyAdmin will be available on http://yourhost:8080.
-PostgreSQL: Admniner (http://yourhost:8080) or pgadmin4 (http://yourhost:8080/pgadmin4) (You have to uncomment the one you want to use) will be available on port 8080. 
+PostgreSQL: Admniner (http://yourhost:8080) or pgadmin4 (http://yourhost:8080/pgadmin) (You have to uncomment the one you want to use) will be available on port 8080. 
 
 ### Automatic retrieval of new spots
 To enable automatic retrieval, you need to setup a cronjob on either the docker host or within the container.

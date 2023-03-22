@@ -6,7 +6,7 @@ services:
      - SPOTWEB_DB_PORT=5432
      - SPOTWEB_DB_USER=postgres
     volumes:
-     - ${SPOTWEBVOLUME}/postgres/spotweb:/config
+     - ${SPOTWEBVOLUME}/spotweb:/config
     depends_on:
      - db
 
@@ -20,7 +20,7 @@ services:
      - POSTGRES_PASSWORD=spotweb
      - POSTGRES_DB=spotweb
     volumes:
-     - ${SPOTWEBVOLUME}/postgres/db:/var/lib/postgresql/data
+     - ${SPOTWEBVOLUME}/db:/var/lib/postgresql/data
     ports:
      - 5432:5432
 
@@ -35,16 +35,24 @@ services:
 #    ports:
 #     - 8080:8080
 
-  pgadmin:
-    image: tgiesela/pgadmin4
+  pgadmin4:
+    image: tgiesela/pgadmin4:latest
     build: pgadmin/.
     container_name: pgadmin4
-    hostname: pgadmin4
+    restart: unless-stopped
     environment:
      - TZ=Europe/Amsterdam
      - PGADMINEMAIL=${PGADMINEMAIL}
+     - PGADMINPASSWORD=${PGADMINPASSWORD}
+     - MAIL_SERVER=${MAIL_SERVER}
+     - MAIL_PORT=${MAIL_PORT}
+     - MAIL_USE_SSL=${MAIL_USE_SSL}
+     - MAIL_USE_TLS=${MAIL_USE_TLS}
+     - MAIL_USERNAME=${MAIL_USERNAME}
+     - MAIL_PASSWORD=${MAIL_PASSWORD}
     depends_on:
      - db
     ports:
      - 8080:80
-   
+    volumes:
+     - ${SPOTWEBVOLUME}/pgadmin4:/config
