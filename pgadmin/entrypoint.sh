@@ -45,7 +45,6 @@ _EOF
     /usr/sbin/a2enmod expires && rt=1
     /usr/sbin/a2enmod deflate && rt=1
 
-
     # Only restart if one of the enmod commands succeeded
     if [[ -n $rt ]]; then
         touch /.setupdone

@@ -9,10 +9,14 @@ export MAIL_USE_TLS = False
 export MAIL_USERNAME = '<email-address>'
 export MAIL_PASSWORD = '<password>'
 
-if [ -h docker-compose.override.yml ] ; then
-  echo "Removing existing override.yml" 
-  rm docker-compose.override.yml
+WANTEDLINK=docker-compose.<yourdatabaseengine>.yml
+CURRENTLINK=$(readlink docker-compose.override.yml )
+if [  $CURRENTLINK != $WANTEDLINK ] ; then
+        echo "Removing existing docker-compose.override.yml"
+        rm -f docker-compose.override.yml
+        ln -s $WANTEDLINK docker-compose.override.yml
+else
+        echo "Using existing docker-compose.override.yml"
 fi
-ln -s docker-compose.<yourdatabaseengine>.yml docker-compose.override.yml
 docker-compose up --build -d
 

@@ -33,6 +33,8 @@ RUN python3 -m venv /pgadmin4
 RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
 RUN . ${HOME}/.cargo/env && . /pgadmin4/bin/activate && pip install pgadmin4
 
+    # Postgresql version15 not available on armv71 so we use the available version
+RUN apt -qy install postgresql-client-13
     # Cleanup
 RUN apt -y autoremove && \
     apt -y clean && \
