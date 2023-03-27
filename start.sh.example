@@ -9,6 +9,12 @@ export MAIL_USE_TLS = False
 export MAIL_USERNAME = '<email-address>'
 export MAIL_PASSWORD = '<password>'
 
+read -p "Volume to store data (${SPOTWEBVOLUME}): " USERVOLUME
+if [ ! -z $USERVOLUME ] ; then
+        SPOTWEBVOLUME=$USERVOLUME
+fi
+echo "Data will be stored on ${SPOTWEBVOLUME}"
+
 WANTEDLINK=docker-compose.<yourdatabaseengine>.yml
 CURRENTLINK=$(readlink docker-compose.override.yml )
 if [  $CURRENTLINK != $WANTEDLINK ] ; then

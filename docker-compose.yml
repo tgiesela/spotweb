@@ -1,7 +1,7 @@
 version: "2.1"
 services:
   spotweb:
-    image: tgiesela/spotweb:latest
+    image: tgiesela/spotweb:v2
     build: ./spotweb
     container_name: spotweb
     restart: unless-stopped
