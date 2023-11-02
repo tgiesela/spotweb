@@ -19,49 +19,26 @@ RUN eval ${UPDATE} && \
         locale-gen --no-purge nl_NL.UTF-8 en_US.UTF-8 && \
     eval ${CLEANUP}
 
-RUN eval ${UPDATE} && \
-	apt -yq install --no-install-recommends \
-		build-essential \
-		zlib1g-dev \
-	        libncurses5-dev \
-		libgdbm-dev \
-		libnss3-dev \
-		libssl-dev \
-		libreadline-dev \
-		libffi-dev \
-		libsqlite3-dev \
-		libbz2-dev \
-	        python3-pip \
-	        libpq-dev python-dev \
-		libjpeg-dev \
-		ssl-cert && \
-	python3 -m venv /pgadmin4 && \
-	curl https://sh.rustup.rs -sSf | bash -s -- -y && \
-        . ${HOME}/.cargo/env && \
-	. /pgadmin4/bin/activate && \
-	pip install pgadmin4 && \
-        apt -yq remove --purge \
-		build-essential \
-		zlib1g-dev \
-	        libncurses5-dev \
-	        libgdbm-dev \
-	        libnss3-dev \
-		libssl-dev \
-		libreadline-dev \
-		libffi-dev \
-		libsqlite3-dev \
-		libbz2-dev \
-	        python3-pip \
-	        libpq-dev python-dev \
-		libjpeg-dev \
-		ssl-cert && \
-	rustup self uninstall -y && \
-    eval ${CLEANUP}
+RUN mkdir /.cargo && \
+	printf "[net]\nretry = 3 # network retries\ngit-fetch-with-cli = true # use the git executable for git operations\n" > /.cargo/config.toml
 
-    # Postgresql version15 not available on armv71 so we use the available version
 RUN eval ${UPDATE} && \
-	apt -qy install --no-install-recommends postgresql-client-13 && \
+	apt -qy install \
+		git \
+	    build-essential \
+		rustc \
+		pip \
+		libpq-dev \
+		libffi-dev \
+		libjpeg-dev \
+		libssl-dev \
+		zlib1g-dev \
+		postgresql-client-13 && \
     eval ${CLEANUP}
+RUN python3 -m venv /pgadmin4 && \
+    . /pgadmin4/bin/activate && \
+    pip install --upgrade pip setuptools wheel && \
+    pip install pgadmin4 
 
 EXPOSE 80
 

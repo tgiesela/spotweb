@@ -20,5 +20,10 @@ services:
      - 8085:80
     volumes:
      - ${SPOTWEBVOLUME}/spotweb:/config
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 
