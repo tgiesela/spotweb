@@ -1,9 +1,16 @@
-version: "2.1"
+x-logging:
+    &default-logging
+    driver: "json-file"
+    options:
+        max-size: "10m"
+        max-file: "3"
+
 services:
   spotweb:
     image: tgiesela/spotweb:v2
     build: ./spotweb
     container_name: spotweb
+    hostname: spotweb
     restart: unless-stopped
     environment:
      - PUID=1001
@@ -16,14 +23,16 @@ services:
      - SPOTWEB_DB_USER=postgres
      - SPOTWEB_DB_PASS=spotweb
      - "SPOTWEB_CRON_RETRIEVE=*/5 * * * *"
+    networks:
+      - mailnet
     ports:
      - 8085:80
     volumes:
      - ${SPOTWEBVOLUME}/spotweb:/config
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
+    logging: *default-logging
+    labels:
+      - "com.tgiesela.vpn.accessible=true"
+      - "com.tgiesela.vpn.vpnport=8085"
+      - "com.tgiesela.vpn.containerport=80"
 
 

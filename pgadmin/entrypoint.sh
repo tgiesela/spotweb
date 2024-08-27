@@ -27,12 +27,13 @@ WSGIScriptAlias /pgadmin ${SITEPACKAGES}/pgadmin4/pgAdmin4.wsgi
 </Directory>
 _EOF
 
-	python3 ${SITEPACKAGES}/pgadmin4/setup.py << _EOF
+	python3 ${SITEPACKAGES}/pgadmin4/setup.py setup-db << _EOF
 ${PGADMINEMAIL}
 ${PGADMINPASSWORD}
 ${PGADMINPASSWORD}
 _EOF
 
+    sed -i "s/Listen 80/Listen ${PGADMINPORT}/g" /etc/apache2/ports.conf
     chown -R www-data:www-data /config
     /usr/sbin/a2enmod wsgi 
     /usr/sbin/a2enconf pgadmin4 

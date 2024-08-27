@@ -1,6 +1,19 @@
-version: "2.1"
+x-logging:
+    &default-logging
+    driver: "json-file"
+    options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  mailnet:
+    external: true
+
 services:
   spotweb:
+    extends: 
+       file: docker-compose.yml
+       service: spotweb
     environment:
      - SPOTWEB_DB_TYPE=pdo_pgsql
      - SPOTWEB_DB_PORT=5432
@@ -9,10 +22,13 @@ services:
      - ${SPOTWEBVOLUME}/spotweb:/config
     depends_on:
      - db
+    logging: *default-logging
 
   db:
-    image: postgres
+    image: postgres:latest
     container_name: spotwebdb
+    networks:
+      - mailnet
     hostname: spotwebdb
     restart: unless-stopped
     environment:
@@ -23,32 +39,21 @@ services:
      - ${SPOTWEBVOLUME}/db:/var/lib/postgresql/data
     ports:
      - 5432:5432
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-
-#  admin:
-#    image: adminer
-#    container_name: postgresadmin
-#    restart: unless-stopped
-#    environment:
-#     - TZ=Europe/Amsterdam
-#    depends_on:
-#     - db
-#    ports:
-#     - 8080:8080
+    logging: *default-logging
 
   pgadmin4:
     image: tgiesela/pgadmin4:latest
     build: pgadmin/.
     container_name: pgadmin4
+    networks:
+      - mailnet
+    hostname: pgadmin
     restart: unless-stopped
     environment:
      - TZ=Europe/Amsterdam
      - PGADMINEMAIL=${PGADMINEMAIL}
      - PGADMINPASSWORD=${PGADMINPASSWORD}
+     - PGADMINPORT=${PGADMINPORT}
      - MAIL_SERVER=${MAIL_SERVER}
      - MAIL_PORT=${MAIL_PORT}
      - MAIL_USE_SSL=${MAIL_USE_SSL}
@@ -58,11 +63,11 @@ services:
     depends_on:
      - db
     ports:
-     - 8080:80
+     - 8081:${PGADMINPORT}
     volumes:
      - ${SPOTWEBVOLUME}/pgadmin4:/config
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
+    logging: *default-logging
+    labels:
+      - "com.tgiesela.vpn.accessible=true"
+      - "com.tgiesela.vpn.vpnport=8081"
+      - "com.tgiesela.vpn.containerport=${PGADMINPORT}"

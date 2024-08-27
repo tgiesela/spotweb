@@ -4,10 +4,10 @@ A collection of docker images running [Spotweb](https://github.com/spotweb/spotw
 ## Background
 This setup is based on the work of [Jeroen Geusebroek](https://github.com/jgeusebroek/docker-spotweb).
 The changes I made were required to run it on raspberry pi 4 (4GB) with Debian 11 (32-bit) because there were issues with the SSL-connection to the newserver.
-Unfortunately the mariadb crashes with corrupted indexes on the RPI although it runs without problems on a 64-bit machine. So maybe the problems are caused by insufficient memory or the 32-bit version. 
+Unfortunately the mysql/mariadb crashes with corrupted indexes on the RPI although it runs without problems on a 64-bit machine. So maybe the problems are caused by insufficient memory or the 32-bit version. 
 That is why I added the option for PostgreSQL and Sqlite. These databases run without problems on Raspberry Pi 4 (32-bit).
 
-For mariadb I added a custom.cnf as an example in which I changed the memory parameters and disabled bin-log.
+For mysql/mariadb I added a custom.cnf as an example in which I changed the memory parameters and disabled bin-log.
 For PostgreSQL I added a postgresql.conf as an example with changed memory parameters (source: https://pgtune.leopard.in.ua/). This one can replace /var/lib/postgresql/data/postgresql.conf
 These two files are not automatically incorporated into the running docker images, so you will have to include them yourself.
 Refer to the documentation of the official images of [Mariadb](https://hub.docker.com/_/mariadb) and [PostgreSQL](https://hub.docker.com/_/postgres).
@@ -21,23 +21,15 @@ You will need an account for a supported newserver.
 ### Initial Installation
 For each supported database engine there is a docker-compose.<dbengine>.yml file. Together with the docker-compose.yml file these files make up a configuration.
 Edit the docker-compose.yml files to change passwords, volumes and ports as required for your installation. 
-Before running docker-compose make sure you have set the variable SPOTWEBVOLUME:
+Before running docker-compose make sure you have set the variable in a file named 'vars'. See vars.example for the variables to set.
+Select the database type you want to use and update the docker compose line in start.sh to use the specific yml file, e.g:
 
-	export SPOTWEBVOLUME=/yourvolume
-	export PGADMINEMAIL=<emailaddress-to-login-pgadmin4> (optional)
-	
-Select the database type you want to use and create a softlink to the specific yml file, e.g:
-
-	ls -s docker-compose.postgresql.yml docker-compose.override.yml
+	docker compose -f docker-compose.postgresql.yml up --build -d
 
 Then run the following command:
 
-	docker-compose up --build -d
+	./start.sh
 	
-If you do not want to create a softlink, you can start it with the following command:
-
-	docker-compose -f docker-compose.yml -f docker-compose.postgresql.yml up --build -d
-
 If you selected postgreSQL as your database engine you will have to select the administration tool of your choice. You can choose between adminer (default docker container) and pgadmin4.
 Pgadmin4 did not have a docker image available for the 32-bit RPI4 (armv71), so I had to build an image myself. 
 For pgadmin4 a user ($PGADMINEMAIL) and a password (pgadmin4) is generated which you need to login. You can access pgadmin on http://yourhost:8080/pgadmin4.

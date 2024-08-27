@@ -3,7 +3,7 @@ LABEL Author="Tonny Gieselaar <tgiesela@gmail.com>"
 
 ENV DEBIAN_FRONTEND="noninteractive" \
     TERM="xterm" \ 
-    APTLIST="cron wget jq locales nano sqlite3" \
+    APTLIST="cron wget jq locales nano sqlite3 dnsutils iproute2 net-tools" \
     UPDATE="apt update && apt -y upgrade" \
     CLEANUP="apt -y autoremove && apt -y clean && rm -rf /var/lib/apt/lists"
 
