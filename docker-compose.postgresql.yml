@@ -10,6 +10,10 @@ networks:
     external: true
 
 services:
+  nzbget:
+    extends:
+       file: docker-compose.yml
+       service: nzbget
   spotweb:
     extends: 
        file: docker-compose.yml
