@@ -29,6 +29,8 @@ services:
      - 8085:80
     volumes:
      - ${SPOTWEBVOLUME}/spotweb:/config
+    depends_on:
+      - vpn
     logging: *default-logging
     labels:
       - "com.tgiesela.vpn.accessible=true"
@@ -51,8 +53,8 @@ services:
     volumes:
       - ${NZBGETVOLUME}/data:/config
       - ${DOWNLOADVOLUME}:/downloads #optional
-#    depends_on: 
-#      - vpn
+    depends_on: 
+      - vpn
     restart: always
     logging: *default-logging
     labels:
@@ -75,8 +77,8 @@ services:
       - ${SAMBAVOLUME}:/config
       - ${DOWNLOADVOLUME}:/download
       - ${SAMBAVOLUME}/smb.conf:/etc/samba/smb.conf
-#    depends_on:
-#      - vpn
+    depends_on:
+      - vpn
     restart: always
     logging: *default-logging
     labels:
