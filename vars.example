@@ -1,4 +1,7 @@
 export SPOTWEBVOLUME=/yourfolder
+
+#pgadmin
+
 export PGADMINEMAIL=youremail@host.com
 export PGADMINPASSWORD=yourpassword
 export PGADMINPORT=80
@@ -8,3 +11,12 @@ export MAIL_USE_SSL = False
 export MAIL_USE_TLS = False
 export MAIL_USERNAME = '<email-address>'
 export MAIL_PASSWORD = '<password>'
+
+# nzbget
+
+export NZBGETVOLUME=/path/to/nzbget/data
+export DOWNLOADVOLUME=/path/to/download
+
+# samba
+
+export SAMBAVOLUME=/path/to/samba/data

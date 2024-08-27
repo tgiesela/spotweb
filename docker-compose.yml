@@ -33,6 +33,7 @@ services:
       - vpn
     logging: *default-logging
     labels:
+      - "com.tgiesela.vpn.hiddenip=true"
       - "com.tgiesela.vpn.accessible=true"
       - "com.tgiesela.vpn.vpnport=8085"
       - "com.tgiesela.vpn.containerport=80"
@@ -58,6 +59,7 @@ services:
     restart: always
     logging: *default-logging
     labels:
+      - "com.tgiesela.vpn.hiddenip=true"
       - "com.tgiesela.vpn.accessible=true"
       - "com.tgiesela.vpn.vpnport=6789"
       - "com.tgiesela.vpn.containerport=6789"
