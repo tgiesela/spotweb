@@ -14,6 +14,10 @@ services:
     extends:
        file: docker-compose.yml
        service: nzbget
+  samba:
+    extends:
+       file: docker-compose.yml
+       service: samba
   spotweb:
     extends: 
        file: docker-compose.yml

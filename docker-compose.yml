@@ -49,10 +49,10 @@ services:
       - NZBGET_USER=nzbget #optional
       - NZBGET_PASS=tegbzn6789 #optional
     volumes:
-      - /path/to/nzbget/data:/config
-      - /path/to/downloads:/downloads #optional
-    depends_on:
-      - vpn
+      - ${NZBGETVOLUME}/data:/config
+      - ${DOWNLOADVOLUME}:/downloads #optional
+#    depends_on: 
+#      - vpn
     restart: always
     logging: *default-logging
     labels:
@@ -60,4 +60,30 @@ services:
       - "com.tgiesela.vpn.vpnport=6789"
       - "com.tgiesela.vpn.containerport=6789"
 
+  samba:
+    image: tgiesela/samba:latest
+    build: ./samba
+    container_name: samba
+    hostname: samba
+    networks: [mailnet]
+    ports:
+      - 139:139
+      - 445:445
+    environment:
+      - TZ=Europe/Amsterdam
+    volumes:
+      - ${SAMBAVOLUME}:/config
+      - ${DOWNLOADVOLUME}:/download
+      - ${SAMBAVOLUME}/smb.conf:/etc/samba/smb.conf
+#    depends_on:
+#      - vpn
+    restart: always
+    logging: *default-logging
+    labels:
+      - "com.tgiesela.vpn.accessible=true"
+      - "com.tgiesela.vpn.vpnport=139;445"
+      - "com.tgiesela.vpn.containerport=139:445"
 
+networks:
+   mailnet:
+      external: true
