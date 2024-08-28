@@ -14,6 +14,7 @@ services:
     extends:
        file: docker-compose.yml
        service: nzbget
+    depends_on: [vpn]
   samba:
     extends:
        file: docker-compose.yml
@@ -22,14 +23,13 @@ services:
     extends: 
        file: docker-compose.yml
        service: spotweb
+    depends_on: [vpn,db]
     environment:
      - SPOTWEB_DB_TYPE=pdo_pgsql
      - SPOTWEB_DB_PORT=5432
      - SPOTWEB_DB_USER=postgres
     volumes:
      - ${SPOTWEBVOLUME}/spotweb:/config
-    depends_on:
-     - db
     logging: *default-logging
 
   db:
@@ -68,8 +68,7 @@ services:
      - MAIL_USE_TLS=${MAIL_USE_TLS}
      - MAIL_USERNAME=${MAIL_USERNAME}
      - MAIL_PASSWORD=${MAIL_PASSWORD}
-    depends_on:
-     - db
+    depends_on: [vpn,db]
     ports:
      - 8081:${PGADMINPORT}
     volumes:
