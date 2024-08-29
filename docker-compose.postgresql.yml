@@ -7,6 +7,7 @@ x-logging:
 
 networks:
   mailnet:
+    name: mailnet
     external: true
 
 services:

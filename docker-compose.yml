@@ -51,7 +51,7 @@ services:
       - NZBGET_PASS=tegbzn6789 #optional
     volumes:
       - ${NZBGETVOLUME}/data:/config
-      - ${DOWNLOADVOLUME}:/downloads #optional
+      - ${DOWNLOADVOLUME}:/downloads 
     restart: always
     logging: *default-logging
     labels:
@@ -80,8 +80,9 @@ services:
     labels:
       - "com.tgiesela.vpn.accessible=true"
       - "com.tgiesela.vpn.vpnport=139;445"
-      - "com.tgiesela.vpn.containerport=139:445"
+      - "com.tgiesela.vpn.containerport=139;445"
 
 networks:
-   mailnet:
-      external: true
+  mailnet:
+    name: mailnet
+    external: true
