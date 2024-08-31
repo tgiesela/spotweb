@@ -38,6 +38,7 @@ services:
     container_name: spotwebdb
     networks:
       - mailnet
+    dns: [ $DNSIP ]
     hostname: spotwebdb
     restart: unless-stopped
     environment:
@@ -56,6 +57,7 @@ services:
     container_name: pgadmin4
     networks:
       - mailnet
+    dns: [ $DNSIP ]
     hostname: pgadmin
     restart: unless-stopped
     environment:
