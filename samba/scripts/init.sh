@@ -8,6 +8,8 @@ info () {
 
 appSetup() {
     info "setup"
+    (echo ${SAMBA_ROOT_PASSWORD}; echo ${SAMBA_ROOT_PASSWORD}) | smbpasswd -s -a root 
+    touch /.alreadysetup
 }
 
 appStart() {
@@ -16,11 +18,10 @@ appStart() {
 
     trap "appStop" SIGTERM
     trap "appStop" SIGINT
-    set +e
-    exec ${DAEMON} --interactive --no-process-group $
-
+    rm -f /run/samba/smbd.pid
+    ${DAEMON} --foreground --daemon --configfile=/config/smb.conf $
+    wait $!
     info "Wait completed"
-tail -f /init.sh
 }
 appStop() {
     info "TRAP HANDLER" active

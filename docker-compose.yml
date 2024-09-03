@@ -74,10 +74,10 @@ services:
       - 445:445
     environment:
       - TZ=Europe/Amsterdam
+      - SAMBA_ROOT_PASSWORD=${SAMBA_ROOT_PASSWORD}
     volumes:
       - ${SAMBAVOLUME}:/config
       - ${DOWNLOADVOLUME}:/download
-      - ${SAMBAVOLUME}/smb.conf:/etc/samba/smb.conf
     restart: always
     logging: *default-logging
     labels:

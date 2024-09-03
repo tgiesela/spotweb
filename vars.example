@@ -20,3 +20,4 @@ export DOWNLOADVOLUME=/path/to/download
 # samba
 
 export SAMBAVOLUME=/path/to/samba/data
+export SAMBA_ROOT_PASSWORD=<password of root in samba>

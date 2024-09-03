@@ -16,10 +16,10 @@ RUN eval ${UPDATE} && \
    eval ${CLEANUP}
 
 COPY --chmod=255 scripts/init.sh /init.sh
-COPY smb.conf /etc/samba/smb.conf
+COPY smb.conf /config/smb.conf
 VOLUME [ "/config" ]
 
-EXPOSE 139 445
+EXPOSE 137 138 139 445
 
 ENTRYPOINT ["/init.sh"]
 CMD ["app:start"]
