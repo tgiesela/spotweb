@@ -11,7 +11,7 @@ services:
     build: ./spotweb
     container_name: spotweb
     hostname: spotweb
-    restart: unless-stopped
+    restart: on-failure:5
     environment:
      - PUID=1001
      - GUID=1001
@@ -38,7 +38,8 @@ services:
       - "com.tgiesela.vpn.containerport=80"
 
   nzbget:
-    image: lscr.io/linuxserver/nzbget:latest
+    image: tgiesela/nzbget:latest
+    build: ./nzbget
     container_name: nzbget
     hostname: nzbget
     networks: [mailnet]
@@ -46,15 +47,11 @@ services:
     ports:
       - 6789:6789
     environment:
-      - PUID=1000
-      - GUID=1000
       - TZ=Europe/Amsterdam
-      - NZBGET_USER=nzbget #optional
-      - NZBGET_PASS=tegbzn6789 #optional
     volumes:
       - ${NZBGETVOLUME}/data:/config
       - ${DOWNLOADVOLUME}:/downloads 
-    restart: always
+    restart: on-failure:5
     logging: *default-logging
     labels:
       - "com.tgiesela.vpn.hiddenip=true"
@@ -70,15 +67,18 @@ services:
     networks: [mailnet]
     dns: [ $DNSIP ]
     ports:
-      - 139:139
-      - 445:445
+      - 139:139/tcp
+      - 137:137/udp
+      - 138:138/udp
+      - 445:445/tcp
     environment:
       - TZ=Europe/Amsterdam
       - SAMBA_ROOT_PASSWORD=${SAMBA_ROOT_PASSWORD}
     volumes:
       - ${SAMBAVOLUME}:/config
-      - ${DOWNLOADVOLUME}:/download
-    restart: always
+      - ${SHAREDDATA}:${SHAREDDATA}
+      - ${SAMBAVOLUME}/smb.conf:/etc/samba/smb.conf
+    restart: on-failure:5
     logging: *default-logging
     labels:
       - "com.tgiesela.vpn.accessible=true"

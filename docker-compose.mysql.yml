@@ -28,7 +28,7 @@ services:
     image: mysql
     container_name: spotwebdb
     hostname: spotwebdb
-    restart: unless-stopped
+    restart: on-failure:5
     environment:
      - TZ=Europe/Amsterdam
      - PUID=1001

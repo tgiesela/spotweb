@@ -21,6 +21,9 @@ if [[ -n "$SPOTWEB_DB_TYPE" && -n "$SPOTWEB_DB_HOST" && -n "$SPOTWEB_DB_NAME" &&
     if [[ -n "$SPOTWEB_DB_PASS" ]]; then
     	echo "\$dbsettings['pass'] = '$SPOTWEB_DB_PASS';"  >> /config/dbsettings.inc.php
     fi
+    if [[ -n "$SPOTWEB_DB_SCHEMA" ]]; then
+    	echo "\$dbsettings['schema'] = '$SPOTWEB_DB_SCHEMA';"  >> /config/dbsettings.inc.php
+    fi
 fi
 
 if [[ -n "$SPOTWEB_DB_PORT" ]]; then

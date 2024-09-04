@@ -29,6 +29,7 @@ services:
      - SPOTWEB_DB_TYPE=pdo_pgsql
      - SPOTWEB_DB_PORT=5432
      - SPOTWEB_DB_USER=postgres
+     - SPOTWEB_DB_SCHEMA=spotweb
     volumes:
      - ${SPOTWEBVOLUME}/spotweb:/config
     logging: *default-logging
@@ -40,7 +41,7 @@ services:
       - mailnet
     dns: [ $DNSIP ]
     hostname: spotwebdb
-    restart: unless-stopped
+    restart: on-failure:5
     environment:
      - TZ=Europe/Amsterdam
      - POSTGRES_PASSWORD=spotweb
@@ -59,7 +60,7 @@ services:
       - mailnet
     dns: [ $DNSIP ]
     hostname: pgadmin
-    restart: unless-stopped
+    restart: on-failure:5
     environment:
      - TZ=Europe/Amsterdam
      - PGADMINEMAIL=${PGADMINEMAIL}
