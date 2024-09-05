@@ -1,19 +1,14 @@
-FROM debian:latest
+FROM debian:12.7
 
 ENV DEBIAN_FRONTEND="noninteractive" \
-    TERM="xterm" \
+    TERM="xterm" \ 
+    APTLIST="cron wget curl ca-certificates jq locales nano sqlite3 dnsutils iproute2 net-tools procps iputils-ping" \
     UPDATE="apt update && apt -y upgrade" \
     CLEANUP="apt -y autoremove && apt -y clean && rm -rf /var/lib/apt/lists"
 
 RUN eval ${UPDATE} && \
-	apt -qy install --no-install-recommends \
-		wget \
-		curl \
-		nano \
-        iproute2 \
-        ca-certificates \
-		locales && \
-        locale-gen --no-purge nl_NL.UTF-8 en_US.UTF-8 && \
+	apt -qy install --no-install-recommends ${APTLIST} && \
+    locale-gen --no-purge nl_NL.UTF-8 en_US.UTF-8 && \
     eval ${CLEANUP}
 
 RUN sed -i 's/^Components: main$/& contrib non-free non-free-firmware/' /etc/apt/sources.list.d/debian.sources && \

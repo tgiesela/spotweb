@@ -9,6 +9,7 @@ info () {
 appSetup() {
     info "setup"
     (echo ${SAMBA_ROOT_PASSWORD}; echo ${SAMBA_ROOT_PASSWORD}) | smbpasswd -s -a root 
+    ./addsambauser.sh import
     touch /.alreadysetup
 }
 
