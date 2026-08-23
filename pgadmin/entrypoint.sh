@@ -3,6 +3,7 @@
 setup(){
     VENV=/pgadmin4
     source /etc/apache2/envvars
+    mkdir -p ${APACHE_RUN_DIR}
     source $VENV/bin/activate
     SITEPACKAGES=$(python -c 'import site; print(site.getsitepackages()[0])')
 

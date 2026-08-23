@@ -11,7 +11,7 @@ services:
     build: ./spotweb
     container_name: spotweb
     hostname: spotweb
-    restart: on-failure:5
+    restart: always
     environment:
      - PUID=1001
      - GUID=1001
@@ -25,7 +25,7 @@ services:
      - "SPOTWEB_CRON_RETRIEVE=*/5 * * * *"
     networks:
       - mailnet
-    dns: [ $DNSIP ]
+#    dns: [ $DNSIP ]
     ports:
      - 8085:80
     volumes:
@@ -43,7 +43,7 @@ services:
     container_name: nzbget
     hostname: nzbget
     networks: [mailnet]
-    dns: [ $DNSIP ]
+#    dns: [ $DNSIP ]
     ports:
       - 6789:6789
     environment:
@@ -51,7 +51,7 @@ services:
     volumes:
       - ${NZBGETVOLUME}/data:/config
       - ${DOWNLOADVOLUME}:/downloads 
-    restart: on-failure:5
+    restart: always
     logging: *default-logging
     labels:
       - "com.tgiesela.vpn.hiddenip=true"
@@ -78,7 +78,7 @@ services:
       - ${SAMBAVOLUME}:/config
       - ${SHAREDDATA}:${SHAREDDATA}
       - ${SAMBAVOLUME}/smb.conf:/etc/samba/smb.conf
-    restart: on-failure:5
+    restart: always
     logging: *default-logging
     labels:
       - "com.tgiesela.vpn.accessible=true"

@@ -80,10 +80,11 @@ EOF
 
 	service cron start
 	echo "date.timezone=${TZ}" > /usr/local/etc/php/conf.d/php.ini
-	source /etc/apache2/envvars
+#	source /etc/apache2/envvars
     	apache2 -D FOREGROUND
 }
 
+source /etc/apache2/envvars
 if [[ ! -f /.setupdone ]]; then
     setup
 fi
