@@ -11,6 +11,7 @@ services:
     build: ./spotweb
     container_name: spotweb
     hostname: spotweb
+    networks: [mailnet]
     restart: always
     environment:
      - PUID=1001
