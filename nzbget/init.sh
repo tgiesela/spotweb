@@ -9,6 +9,9 @@ info () {
 appSetup () {
     info "setup"
 	sh nzbget-latest-bin-linux.run
+	if [ ! -f /config/nzbget.conf ]; then
+		cp /nzbget/nzbget.conf /config/
+	fi
     touch /.alreadysetup
 }
 appStop () {

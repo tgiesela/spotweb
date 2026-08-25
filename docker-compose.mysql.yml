@@ -7,36 +7,63 @@ x-logging:
 
 networks:
   mailnet:
+    name: mailnet
     external: true
 
 services:
+  nzbget:
+    extends:
+       file: docker-compose.yml
+       service: nzbget
+  samba:
+    extends:
+       file: docker-compose.yml
+       service: samba
   spotweb:
     extends: 
        file: docker-compose.yml
        service: spotweb
+    networks:
+      - mailnet
+    depends_on: [db]
     environment:
      - SPOTWEB_DB_TYPE=pdo_mysql
      - SPOTWEB_DB_PORT=3306
-     - SPOTWEB_DB_USER=postgres
+     - SPOTWEB_DB_USER=spotweb
+     - SPOTWEB_DB_SCHEMA=spotweb     
     volumes:
-     - ${SPOTWEBVOLUME}/mysql/spotweb:/config
-    depends_on:
-     - db
+     - ${SPOTWEBVOLUME}/spotweb:/config
     logging: *default-logging
 
   db:
-    image: mysql
+    image: mariadb
     container_name: spotwebdb
+    networks:
+      - mailnet
     hostname: spotwebdb
     restart: on-failure:5
+#    user: "999:999"
+    user: "1000:1000"
     environment:
-     - TZ=Europe/Amsterdam
-     - PUID=1001
-     - MYSQL_ROOT_PASSWORD=spotweb
-     - MYSQL_DATABASE=spotweb
+     TZ: Europe/Amsterdam
+#     PUID: 1000
+     MYSQL_ROOT_PASSWORD: spotweb
+     MYSQL_DATABASE: spotweb
     volumes:
-     - ${SPOTWEBVOLUME}/mysql/db:/var/lib/postgresql/data
+     - ${SPOTWEBVOLUME}/db:/var/lib/mysql
     ports:
      - 3306:3306
     logging: *default-logging
 
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin
+    networks:
+      - mailnet
+    restart: on-failure:5
+    depends_on: [db]
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: spotweb
+    ports:
+      - "8080:80"

@@ -1,4 +1,4 @@
-FROM debian:12.7
+FROM debian:trixie
 
 ENV DEBIAN_FRONTEND="noninteractive" \
     TERM="xterm" \ 
@@ -15,7 +15,8 @@ RUN sed -i 's/^Components: main$/& contrib non-free non-free-firmware/' /etc/apt
     apt update && \
 	apt install unrar 7zip && \
 	eval ${CLEANUP}
-RUN wget https://nzbget.net/download/nzbget-latest-bin-linux.run
+    RUN wget -O nzbget-latest-bin-linux.run https://github.com/nzbget/nzbget/releases/download/v21.1/nzbget-21.1-bin-linux.run
+#    RUN wget https://nzbget.net/download/nzbget-latest-bin-linux.run
 
 EXPOSE 6789
 

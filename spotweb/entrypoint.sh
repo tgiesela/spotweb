@@ -1,5 +1,5 @@
 #!/bin/bash
-
+PHP=$(which php)
 setup(){
 if [ ! -f /config/ownsettings.php ] && [ -f /var/www/spotweb/ownsettings.php ]; then
   cp /var/www/spotweb/ownsettings.php /config/ownsettings.php
@@ -42,16 +42,16 @@ if [[ -n "$SPOTWEB_CRON_RETRIEVE" || -n "$SPOTWEB_CRON_CACHE_CHECK" ]]; then
     ln -sf /proc/$$/fd/1 /var/log/stdout
     service cron start
 	if [[ -n "$SPOTWEB_CRON_RETRIEVE" ]]; then
-        echo "$SPOTWEB_CRON_RETRIEVE su -l www-data -s /usr/local/bin/php /var/www/spotweb/retrieve.php >/var/log/stdout 2>&1" > /etc/crontab
+        echo "$SPOTWEB_CRON_RETRIEVE su -l www-data -s $PHP /var/www/spotweb/retrieve.php >/var/log/stdout 2>&1" > /etc/crontab
 	fi
 	if [[ -n "$SPOTWEB_CRON_CACHE_CHECK" ]]; then
-        echo "$SPOTWEB_CRON_CACHE_CHECK su -l www-data -s /usr/local/bin/php /var/www/spotweb/bin/check-cache.php >/var/log/stdout 2>&1" >> /etc/crontab
+        echo "$SPOTWEB_CRON_CACHE_CHECK su -l www-data -s $PHP /var/www/spotweb/bin/check-cache.php >/var/log/stdout 2>&1" >> /etc/crontab
 	fi
     crontab /etc/crontab
 fi
 
 # Run database update
-/usr/local/bin/php /var/www/spotweb/bin/upgrade-db.php >/dev/null 2>&1
+$PHP /var/www/spotweb/bin/upgrade-db.php >/dev/null 2>&1
 
 # Clean up apache pid (if there is one)
 rm -rf /run/apache2/apache2.pid
@@ -72,15 +72,13 @@ start(){
 	echo -e "Setting (PHP) time zone to ${TZ}\n"
 	cat << EOF > /tmp/settimezone.php
 <?php
-date_default_timezone_set(\$_ENV["TZ"]);
+date_default_timezone_set(getenv("TZ"));
 echo date_default_timezone_get();
 ?>
 EOF
 	php /tmp/settimezone.php
 
 	service cron start
-	echo "date.timezone=${TZ}" > /usr/local/etc/php/conf.d/php.ini
-#	source /etc/apache2/envvars
     	apache2 -D FOREGROUND
 }
 

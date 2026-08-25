@@ -15,7 +15,6 @@ services:
     extends:
        file: docker-compose.yml
        service: nzbget
-#    depends_on: [vpn]
   samba:
     extends:
        file: docker-compose.yml
@@ -24,7 +23,6 @@ services:
     extends: 
        file: docker-compose.yml
        service: spotweb
-#    depends_on: [vpn,db]
     depends_on: [db]
     environment:
      - SPOTWEB_DB_TYPE=pdo_pgsql
@@ -40,9 +38,8 @@ services:
     container_name: spotwebdb
     networks:
       - mailnet
-    dns: [ $DNSIP ]
     hostname: spotwebdb
-    restart: always
+    restart: on-failure:5
     environment:
      - TZ=Europe/Amsterdam
      - POSTGRES_PASSWORD=spotweb
@@ -59,7 +56,6 @@ services:
     container_name: pgadmin4
     networks:
       - mailnet
-    dns: [ $DNSIP ]
     hostname: pgadmin
     restart: always
     environment:
